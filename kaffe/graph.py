@@ -119,10 +119,12 @@ class Graph(object):
         for node in self.topologically_sorted():
             # If the node has learned parameters, display the first one's shape.
             # In case of convolutions, this corresponds to the weights.
-            data_shape = node.data[0].shape if node.data else '--'
+            if node.data: # py3fix
+                node.data = list(node.data) # py3fix
+            data_shape = str(node.data[0].shape) if node.data else '--' # py3fix
             out_shape = node.output_shape or '--'
             s.append('{:<20} {:<30} {:>20} {:>20}'.format(node.kind, node.name, data_shape,
-                                                          tuple(out_shape)))
+                                                          str(tuple(out_shape)))) # py3fix
         return '\n'.join(s)
 
 
